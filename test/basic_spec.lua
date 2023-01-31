@@ -7,6 +7,16 @@ local plugin = require "neotest-mocha" {
 }
 local util = require "neotest-mocha.util"
 
+describe("filter_dir", function()
+  it("filters out node_modules", function()
+    assert.True(plugin.filter_dir "node_modules")
+  end)
+
+  it("doesnt filter non node_modules", function()
+    assert.False(plugin.filter_dir "api")
+  end)
+end)
+
 describe("is_test_file", function()
   local supported_extensions = { "js", "mjs", "cjs", "jsx", "coffee", "ts", "tsx" }
 
@@ -28,10 +38,7 @@ describe("is_test_file", function()
 
   it("matches mocha test files with configurable test patterns", function()
     local intermediate_extensions = { "spec", "test", "lollipop" }
-    local is_test_file = util.create_test_file_extensions_matcher(
-      intermediate_extensions,
-      supported_extensions
-    )
+    local is_test_file = util.create_test_file_extensions_matcher(intermediate_extensions, supported_extensions)
 
     -- by folder name.
     for _, extension in ipairs(supported_extensions) do
